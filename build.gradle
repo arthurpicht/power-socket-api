@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'de.arthurpicht'
+version = '0.0.1-SNAPSHOT'
+def artifact = 'ap-power-socket-api'
+
+repositories {
+    maven { url "https://raw.githubusercontent.com/arthurpicht/mvn-repo/main/releases"}
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'de.arthurpicht:ap-utils-core:1.20.0'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+base {
+    archivesName = artifact
+}
+
+javadoc {
+    // options.addBooleanOption('html5', true)
+    destinationDir = file("javadoc")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = artifact
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = layout.buildDirectory.dir(project.gradle.gradleUserHomeDir.parent + "/gitrepos/ap/mvn-repo/releases")
+        }
+    }
+}

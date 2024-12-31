@@ -7,20 +7,20 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatusParserTest {
 
     private static List<Status.OutletStatus> createListOfOutletStatusExpected() {
         List<Status.OutletStatus> outletStatusListExpected = new ArrayList<>();
-        outletStatusListExpected.add(new Status.OutletStatus("server-01", false));
-        outletStatusListExpected.add(new Status.OutletStatus("server-02", false));
-        outletStatusListExpected.add(new Status.OutletStatus("server-03", true));
-        outletStatusListExpected.add(new Status.OutletStatus("server-04", true));
-        outletStatusListExpected.add(new Status.OutletStatus("Out 5", false));
-        outletStatusListExpected.add(new Status.OutletStatus("Out 6", false));
-        outletStatusListExpected.add(new Status.OutletStatus("Out 7", false));
-        outletStatusListExpected.add(new Status.OutletStatus("Out 8", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_1_1", "server-01", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_1_2", "server-02", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_1_3", "server-03", true));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_1_4", "server-04", true));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_2_1", "Out 5", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_2_2", "Out 6", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_2_3", "Out 7", false));
+        outletStatusListExpected.add(new Status.OutletStatus("OUTLET_2_4", "Out 8", false));
         return outletStatusListExpected;
     }
 

@@ -18,8 +18,11 @@ public class PowerSocket {
     public PowerSocket(List<PowerSocketConfig> powerSocketConfigList) {
         Map<String, PowerSocketProcessor> powerSocketProcessorHashMapTemp = new HashMap<>();
         for (PowerSocketConfig powerSocketConfig : powerSocketConfigList) {
+            String deviceId = powerSocketConfig.getDeviceId();
+            if (powerSocketProcessorHashMapTemp.containsKey(deviceId))
+                throw new IllegalArgumentException("Configuration for deviceId already specified: [" + deviceId + "].");
             PowerSocketProcessor powerSocketProcessor = create(powerSocketConfig);
-            powerSocketProcessorHashMapTemp.put(powerSocketConfig.getDeviceId(), powerSocketProcessor);
+            powerSocketProcessorHashMapTemp.put(deviceId, powerSocketProcessor);
         }
         this.powerSocketProcessorMap = Collections.unmodifiableMap(powerSocketProcessorHashMapTemp);
     }
@@ -36,14 +39,14 @@ public class PowerSocket {
         return powerSocketProcessor.getStatus();
     }
 
-    public void switchOn(String deviceId) throws PowerSocketApiException {
+    public void switchOn(String deviceId, String outletId) throws PowerSocketApiException {
         PowerSocketProcessor powerSocketProcessor = getPowerSocketProcessor(deviceId);
-        powerSocketProcessor.switchOn();
+        powerSocketProcessor.switchOn(outletId);
     }
 
-    public void switchOff(String deviceId) throws PowerSocketApiException {
+    public void switchOff(String deviceId, String outletId) throws PowerSocketApiException {
         PowerSocketProcessor powerSocketProcessor = getPowerSocketProcessor(deviceId);
-        powerSocketProcessor.switchOff();
+        powerSocketProcessor.switchOff(outletId);
     }
 
     private PowerSocketProcessor getPowerSocketProcessor(String deviceId) throws PowerSocketApiException {

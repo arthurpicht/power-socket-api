@@ -7,8 +7,8 @@ public interface PowerSocketProcessor {
 
     Status getStatus() throws PowerSocketApiException;
 
-    void switchOn() throws PowerSocketApiException;
+    void switchOn(String outletId) throws PowerSocketApiException;
 
-    void switchOff() throws PowerSocketApiException;
+    void switchOff(String outletId) throws PowerSocketApiException;
 
 }

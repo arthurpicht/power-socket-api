@@ -1,7 +1,7 @@
 package de.arthurpicht.powerSocketApi.infratecPM8;
 
 import de.arthurpicht.powerSocketApi.PowerSocketApiException;
-import de.arthurpicht.powerSocketApi.PowerSocketStateException;
+import de.arthurpicht.powerSocketApi.IllegalOperationException;
 import de.arthurpicht.powerSocketApi.common.HttpHelper;
 import de.arthurpicht.powerSocketApi.common.PowerSocketProcessor;
 import de.arthurpicht.powerSocketApi.Status;
@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 @SuppressWarnings({"SpellCheckingInspection"})
 public class InfratecPM8Processor implements PowerSocketProcessor {
 
-    private static enum Function { ON, OFF }
+    private enum Function { ON, OFF }
     private final InfratecPM8Config infratecPM8Config;
 
     public InfratecPM8Processor(InfratecPM8Config infratecPM8Config) {
@@ -27,7 +27,7 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
     }
 
     @Override
-    public void switchOn(String outletId) throws PowerSocketApiException {
+    public void switchOn(String outletId) throws PowerSocketApiException, IllegalOperationException {
         assertOutletStatusNotYet(outletId, Function.ON);
         String url = getUrlForSwitch(outletId, Function.ON);
         String response = makeHttpRequest(url);
@@ -35,14 +35,14 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
     }
 
     @Override
-    public void switchOff(String outletId) throws PowerSocketApiException {
+    public void switchOff(String outletId) throws PowerSocketApiException, IllegalOperationException {
         assertOutletStatusNotYet(outletId, Function.OFF);
         String url = getUrlForSwitch(outletId, Function.OFF);
         String response = makeHttpRequest(url);
         assertOutletStatusReached(outletId, Function.OFF, response);
     }
 
-    private void assertOutletStatusNotYet(String outletId, Function functionExpNot) throws PowerSocketApiException {
+    private void assertOutletStatusNotYet(String outletId, Function functionExpNot) throws PowerSocketApiException, IllegalOperationException {
         Status status = getStatus();
         Status.OutletStatus outletStatus = status.getOutletStatus(outletId);
 
@@ -50,9 +50,9 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
                 "[" + outletId + "] [" + outletStatus.outletName() + "] already in state " + functionExpNot.name() + ".";
 
         if (functionExpNot == Function.ON && outletStatus.power()) {
-            throw new PowerSocketStateException(errorMessage);
+            throw new IllegalOperationException(errorMessage);
         } else if (functionExpNot == Function.OFF && !outletStatus.power()) {
-            throw new PowerSocketStateException(errorMessage);
+            throw new IllegalOperationException(errorMessage);
         }
     }
 

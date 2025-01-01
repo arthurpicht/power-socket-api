@@ -5,10 +5,7 @@ import de.arthurpicht.powerSocketApi.common.PowerSocketProcessor;
 import de.arthurpicht.powerSocketApi.infratecPM8.InfratecPM8Config;
 import de.arthurpicht.powerSocketApi.infratecPM8.InfratecPM8Processor;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class PowerSocket {
@@ -34,17 +31,21 @@ public class PowerSocket {
         throw new IllegalStateException("Unknown type of PowerSocketConfig.");
     }
 
+    public Set<String> getDeviceIds() {
+        return this.powerSocketProcessorMap.keySet();
+    }
+
     public Status getStatus(String deviceId) throws PowerSocketApiException {
         PowerSocketProcessor powerSocketProcessor = getPowerSocketProcessor(deviceId);
         return powerSocketProcessor.getStatus();
     }
 
-    public void switchOn(String deviceId, String outletId) throws PowerSocketApiException {
+    public void switchOn(String deviceId, String outletId) throws PowerSocketApiException, IllegalOperationException {
         PowerSocketProcessor powerSocketProcessor = getPowerSocketProcessor(deviceId);
         powerSocketProcessor.switchOn(outletId);
     }
 
-    public void switchOff(String deviceId, String outletId) throws PowerSocketApiException {
+    public void switchOff(String deviceId, String outletId) throws PowerSocketApiException, IllegalOperationException {
         PowerSocketProcessor powerSocketProcessor = getPowerSocketProcessor(deviceId);
         powerSocketProcessor.switchOff(outletId);
     }

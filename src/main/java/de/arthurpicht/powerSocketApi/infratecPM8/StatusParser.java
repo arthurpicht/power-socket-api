@@ -22,9 +22,10 @@ public class StatusParser {
 
     public static Status parseActionHtml(String deviceId, String html) throws PowerSocketApiException {
         List<String> htmlLines = StringHelper.splitByLineBreaks(html);
+        if (htmlLines.size() > 3 && htmlLines.get(2).startsWith("Status:"))
+            throw new PowerSocketApiException("Unexpected response from power module. Check credentials.");
         if (htmlLines.size() < 7 || !htmlLines.get(2).startsWith("Done."))
             throw new PowerSocketApiException("Could not process html response. \"Done\"-page expected. Actually is:\n" + html);
-
         String statusLine = htmlLines.get(4);
         List<Status.OutletStatus> outletStatusList = parseLine(statusLine);
         return new Status(deviceId, outletStatusList);

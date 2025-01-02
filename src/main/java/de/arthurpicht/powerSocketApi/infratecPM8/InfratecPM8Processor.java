@@ -49,9 +49,9 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
         String errorMessage = "Outlet [" + this.infratecPM8Config.getDeviceId() + "] " +
                 "[" + outletId + "] [" + outletStatus.outletName() + "] already in state " + functionExpNot.name() + ".";
 
-        if (functionExpNot == Function.ON && outletStatus.power()) {
+        if (functionExpNot == Function.ON && outletStatus.isPoweredOn()) {
             throw new IllegalOperationException(errorMessage);
-        } else if (functionExpNot == Function.OFF && !outletStatus.power()) {
+        } else if (functionExpNot == Function.OFF && !outletStatus.isPoweredOn()) {
             throw new IllegalOperationException(errorMessage);
         }
     }
@@ -61,9 +61,9 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
         Status.OutletStatus outletStatus = status.getOutletStatus(outletId);
         String errorMessage = "Error on switching " + functionReached.name() + " [" + this.infratecPM8Config.getDeviceId() + "] " +
                 "[" + outletId + "] [" + outletStatus.outletName() + "].";
-        if (functionReached == Function.ON && !outletStatus.power()) {
+        if (functionReached == Function.ON && !outletStatus.isPoweredOn()) {
             throw new PowerSocketApiException(errorMessage);
-        } else if (functionReached == Function.OFF && outletStatus.power()) {
+        } else if (functionReached == Function.OFF && outletStatus.isPoweredOn()) {
             throw new PowerSocketApiException(errorMessage);
         }
     }

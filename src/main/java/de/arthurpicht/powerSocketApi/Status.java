@@ -4,7 +4,7 @@ import java.util.List;
 
 public record Status(String deviceId, List<OutletStatus> outletStatusList) {
 
-    public record OutletStatus(String outletId, String outletName, boolean power) {
+    public record OutletStatus(String outletId, String outletName, boolean isPoweredOn) {
     }
 
     public OutletStatus getOutletStatus(String outletId) {

@@ -10,7 +10,17 @@ public class InfratecConsts {
         OUTLET_2_1,
         OUTLET_2_2,
         OUTLET_2_3,
-        OUTLET_2_4
+        OUTLET_2_4;
+
+        public static boolean hasOutletId(String outletId) {
+            for (OutletId outletIdCur : OutletId.values()) {
+                if (outletIdCur.name().equals(outletId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 
 }

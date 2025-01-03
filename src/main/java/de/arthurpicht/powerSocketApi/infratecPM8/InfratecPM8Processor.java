@@ -1,16 +1,19 @@
 package de.arthurpicht.powerSocketApi.infratecPM8;
 
-import de.arthurpicht.powerSocketApi.PowerSocketApiException;
 import de.arthurpicht.powerSocketApi.IllegalOperationException;
-import de.arthurpicht.powerSocketApi.common.HttpHelper;
-import de.arthurpicht.powerSocketApi.common.PowerSocketProcessor;
+import de.arthurpicht.powerSocketApi.PowerSocketApiException;
 import de.arthurpicht.powerSocketApi.Status;
+import de.arthurpicht.powerSocketApi.common.HttpHelper;
+import de.arthurpicht.powerSocketApi.common.OutletIds;
+import de.arthurpicht.powerSocketApi.common.PowerSocketProcessor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 @SuppressWarnings({"SpellCheckingInspection"})
 public class InfratecPM8Processor implements PowerSocketProcessor {
+
+    private static final OutletIds OUTLET_IDS = new InfratecPM8OutletIds();
 
     private enum Function { ON, OFF }
     private final InfratecPM8Config infratecPM8Config;
@@ -20,10 +23,16 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
     }
 
     @Override
+    public OutletIds getOutletIds() {
+        return OUTLET_IDS;
+    }
+
+    @Override
     public Status getStatus() throws PowerSocketApiException {
+        @SuppressWarnings("HttpUrlsUsage")
         String url = "http://" + this.infratecPM8Config.getHost() + "/sw?s=0";
         String response = makeHttpRequest(url);
-        return StatusParser.parseStatusHtml(this.infratecPM8Config.getDeviceId(), response);
+        return StatusParser.parseStatusHtml(this.infratecPM8Config.getDeviceId(), response, OUTLET_IDS);
     }
 
     @Override
@@ -57,7 +66,7 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
     }
 
     private void assertOutletStatusReached(String outletId, Function functionReached, String htmlResponse) throws PowerSocketApiException {
-        Status status = StatusParser.parseActionHtml(this.infratecPM8Config.getDeviceId(), htmlResponse);
+        Status status = StatusParser.parseActionHtml(this.infratecPM8Config.getDeviceId(), htmlResponse, OUTLET_IDS);
         Status.OutletStatus outletStatus = status.getOutletStatus(outletId);
         String errorMessage = "Error on switching " + functionReached.name() + " [" + this.infratecPM8Config.getDeviceId() + "] " +
                 "[" + outletId + "] [" + outletStatus.outletName() + "].";
@@ -79,19 +88,12 @@ public class InfratecPM8Processor implements PowerSocketProcessor {
 
     private String getUrlForSwitch(String outletId, Function function) {
         String functionString = function.name().toLowerCase();
-        int outletNumber = getOutletNumber(outletId);
+        int outletNumber = OUTLET_IDS.getOutletNr(outletId);
+        //noinspection HttpUrlsUsage
         return "http://" + this.infratecPM8Config.getHost() + "/sw?u=" + this.infratecPM8Config.getUsername()
                 + "&p=" + this.infratecPM8Config.getPassword()
                 + "&o=" + outletNumber
                 + "&f=" + functionString;
-    }
-
-    private int getOutletNumber(String outletId) {
-        try {
-            return InfratecConsts.OutletId.valueOf(outletId).ordinal() + 1;
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Unknown outletId for InfratecPM8: [" + outletId + "].");
-        }
     }
 
 }

@@ -6,6 +6,8 @@ import de.arthurpicht.powerSocketApi.Status;
 
 public interface PowerSocketProcessor {
 
+    OutletIds getOutletIds();
+
     Status getStatus() throws PowerSocketApiException;
 
     void switchOn(String outletId) throws PowerSocketApiException, IllegalOperationException;

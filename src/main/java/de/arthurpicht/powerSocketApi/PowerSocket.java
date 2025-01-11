@@ -3,6 +3,8 @@ package de.arthurpicht.powerSocketApi;
 import de.arthurpicht.powerSocketApi.common.OutletIds;
 import de.arthurpicht.powerSocketApi.common.PowerSocketConfig;
 import de.arthurpicht.powerSocketApi.common.PowerSocketProcessor;
+import de.arthurpicht.powerSocketApi.dummy.DummyConfig;
+import de.arthurpicht.powerSocketApi.dummy.DummyProcessor;
 import de.arthurpicht.powerSocketApi.infratecPM8.InfratecPM8Config;
 import de.arthurpicht.powerSocketApi.infratecPM8.InfratecPM8Processor;
 
@@ -28,6 +30,8 @@ public class PowerSocket {
     private PowerSocketProcessor create(PowerSocketConfig powerSocketConfig) {
         if (powerSocketConfig instanceof InfratecPM8Config infratecPM8Config) {
             return new InfratecPM8Processor(infratecPM8Config);
+        } else if (powerSocketConfig instanceof DummyConfig dummyConfig) {
+            return new DummyProcessor(dummyConfig);
         }
         throw new IllegalStateException("Unknown type of PowerSocketConfig.");
     }
